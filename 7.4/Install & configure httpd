@@ -1,0 +1,47 @@
+#Install httpd
+yum -y install httpd
+
+#Enable inbound TCP port 80 and 443 traffic
+firewall-cmd --permanent --zone=public --add-service=http
+firewall-cmd --permanent --zone=public --add-service=https
+firewall-cmd --reload
+
+#Start httpd
+systemctl start httpd
+
+#Automatically start httpd at boot
+systemctl enable httpd
+
+#Reload httpd configuration
+systemctl reload httpd
+
+#Reload the configuration without affecting active requests.
+apachectl graceful
+
+#Self-explanatory commands
+systemctl start|stop|restart|status|is-active httpd
+
+#Path to configuration file
+/etc/httpd/conf/httpd.conf
+
+#Check the configuration file
+apachectl configtest
+
+##Edit httpd.conf
+#Disable Trace HTTP Request
+TraceEnable off
+
+#Remove signature and banner
+ServerSignature Off
+ServerTokens Prod
+
+#Set cookie with HttpOnly and Secure flag
+Header edit Set-Cookie ^(.*)$ $1;HttpOnly;Secure
+
+#Prevent clickjacking attack
+Header always append X-Frame-Options SAMEORIGIN
+
+#X-XSS Protection
+Header set X-XSS-Protection "1; mode=block"
+
+FileETag None
