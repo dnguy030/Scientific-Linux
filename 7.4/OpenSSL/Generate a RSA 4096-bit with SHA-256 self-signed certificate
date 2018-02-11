@@ -1,0 +1,2 @@
+#Generate an RSA 4096-bit with SHA-256 self-signed certificate (valid for 365 days)
+openssl req -x509 -nodes -days 365 -sha256 -newkey rsa:4096 -keyout rsa4096_private.key -out rsa4096_self_signed.cert
