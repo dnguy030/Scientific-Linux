@@ -1,0 +1,20 @@
+# Scientific Linux Minimal Install
+
+# Disable IPv6 in kernel module (requires reboot)
+vi /etc/default/grub
+#Add ipv6.disable=1 to GRUB_CMDLINE_LINUX
+grub2-mkconfig -o /boot/grub2/grub.cfg
+#Reboot for changes to take effect
+shutdown -r now
+
+# Configure networking (optional if using DHCP)
+
+# Add DNS servers
+vi /etc/resolv.conf
+nameserver 8.8.8.8
+nameserver 8.8.4.4
+
+# Update and reboot the OS
+yum -y update && shutdown -r now
+
+# Configure NTP
