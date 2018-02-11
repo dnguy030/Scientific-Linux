@@ -1,0 +1,43 @@
+#Tutorials used:
+#https://www.digitalocean.com/community/tutorials/how-to-create-an-ssl-certificate-on-apache-for-centos-7
+#https://raymii.org/s/tutorials/Strong_SSL_Security_On_Apache2.html
+#https://cipherli.st/
+
+
+yum install mod_ssl
+systemctl restart httpd
+vi /etc/httpd/conf.d/ssl.conf
+
+#Create a self-signed RSA 4096 bit, SHA256 certificate (valid for 365 days)
+mkdir /etc/ssl/httpd
+chmod 700 /etc/ssl/httpd
+openssl req -x509 -nodes -days 365 -sha256 -newkey rsa:4096 -keyout /etc/ssl/httpd/apache-selfsigned.key -out /etc/ssl/httpd/apache-selfsigned.crt
+
+#PFS
+cd /etc/ssl/httpd
+#The following command will take some time to complete
+openssl dhparam -out dhparam.pem 4096
+
+#Manually append dhparam.pem file to the end of the self-signed certificate
+cat /etc/ssl/httpd/dhparam.pem | tee -a /etc/ssl/httpd/apache-selfsigned.crt
+
+vi /etc/httpd/conf.d/ssl.conf
+SSLCertificateFile /etc/ssl/httpd/apache-selfsigned.crt
+SSLCertificateKeyFile /etc/ssl/httpd/apache-selfsigned.key
+
+#Paste in the settings from the site AFTER the end of the VirtualHost block
+#Apache2 secure SSL configuration
+SSLCipherSuite EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH
+SSLProtocol All -SSLv2 -SSLv3 -TLSv1 -TLSv1.1
+SSLHonorCipherOrder On
+Header always set Strict-Transport-Security "max-age=63072000; includeSubDomains; preload"
+Header always set X-Frame-Options DENY
+Header always set X-Content-Type-Options nosniff
+# Requires Apache >= 2.4
+SSLCompression off 
+SSLUseStapling on 
+SSLStaplingCache "shmcb:logs/stapling-cache(150000)" 
+# Requires Apache >= 2.4.11
+#SSLSessionTickets Off
+
+apachectl configtest
