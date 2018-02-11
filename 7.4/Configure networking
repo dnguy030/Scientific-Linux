@@ -1,0 +1,50 @@
+#Configure a persistent IP address
+#Find out interface name
+ip addr
+
+#Edit the ifcfg (interface configuration) file
+vi /etc/sysconfig/network-scripts/ifcfg-[interface name]
+
+#To use DHCP
+BOOTPROTO=dhcp
+ONBOOT=yes
+
+#To use a static IP address
+BOOTPROTO=none
+ONBOOT=yes
+IPADDR=the_ip_address
+PREFIX=the_prefix
+#NETMASK=
+GATEWAY=the_gateway
+
+# systemctl start|stop|restart|status network
+sytemctl restart network
+
+
+#ip commands given on the command line will not persist after a system restart.
+ Where persistence is required, make use of configuration files (ifcfg files)
+ or add the commands to a script.
+# ip command equivalent of ifconfig
+ip a
+
+# Show IPv4 information
+ip -4 a
+
+# Show IPv6 information
+ip -6 a
+
+# Show specific interface information
+ip a show [interface]
+
+# Configure the IP address
+ip a add [IP address]/[netmask] dev [interface name]
+
+# Bring the interface up or down
+ip link set [interface name] up
+ip link set [interface name] down
+
+# Add the default gateway
+ip route add default via [IP of default gateway]
+
+# Restart the network service for changes to take effect
+service network restart
