@@ -1,0 +1,8 @@
+#Generate the 384-bit ECC private key
+openssl ecparam -out ecc_private.key -name secp384r1 -genkey
+
+#Generate a certificate signing request
+openssl req -new -sha256 -key path_to_private_key -out csr.pem
+
+#Self-sign the certificate (valid for 365 days)
+openssl req -x509 -sha256 -nodes -days 365 -key path_to_private_key -in path_to_csr.pem -out self_signed_certificate.pem
