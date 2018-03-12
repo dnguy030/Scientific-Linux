@@ -6,6 +6,27 @@ firewall-cmd --permanent --zone=public --add-service=http
 firewall-cmd --permanent --zone=public --add-service=https
 firewall-cmd --reload
 
+#Path to configuration file
+/etc/httpd/conf/httpd.conf
+
+#Copy and paste into httpd.conf
+
+#Disable Trace HTTP Request
+TraceEnable off
+#Remove signature and banner
+ServerSignature Off
+ServerTokens Prod
+#Set cookie with HttpOnly and Secure flag
+Header edit Set-Cookie ^(.*)$ $1;HttpOnly;Secure
+#Prevent clickjacking attack
+Header always append X-Frame-Options SAMEORIGIN
+#X-XSS Protection
+Header set X-XSS-Protection "1; mode=block"
+FileETag None
+
+#Check the configuration file
+apachectl configtest
+
 #Start httpd
 systemctl start httpd
 
@@ -20,28 +41,3 @@ apachectl graceful
 
 #Self-explanatory commands
 systemctl start|stop|restart|status|is-active httpd
-
-#Path to configuration file
-/etc/httpd/conf/httpd.conf
-
-#Check the configuration file
-apachectl configtest
-
-##Edit httpd.conf
-#Disable Trace HTTP Request
-TraceEnable off
-
-#Remove signature and banner
-ServerSignature Off
-ServerTokens Prod
-
-#Set cookie with HttpOnly and Secure flag
-Header edit Set-Cookie ^(.*)$ $1;HttpOnly;Secure
-
-#Prevent clickjacking attack
-Header always append X-Frame-Options SAMEORIGIN
-
-#X-XSS Protection
-Header set X-XSS-Protection "1; mode=block"
-
-FileETag None
