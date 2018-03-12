@@ -1,20 +1,22 @@
 # Install chrony
 yum install chrony
 
+#Path to configuration file
+/etc/chrony.conf
+
+#Copy and paste
+#Google's public NTP servers (that serves leap-smeared time)
+#into chrony's config file
+server time1.google.com iburst
+server time2.google.com iburst
+server time3.google.com iburst
+server time4.google.com iburst
+
 # Start chrony
 systemctl start chronyd
 
 # Enable chrony at boot
 systemctl enable chronyd
-
-#Path to configuration file
-/etc/chrony.conf
-
-#Google's public NTP servers that serves leap-smeared time
-server time1.google.com iburst
-server time2.google.com iburst
-server time3.google.com iburst
-server time4.google.com iburst
 
 #Self-explanatory commands
 chronyc tracking
